@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot de Consultas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 50px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin: 15px; width: 350px; }
+        input { padding: 8px; width: 60%; }
+        button { padding: 8px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h3>Consulta de Moeda</h3>
+        <input type="text" id="moedaInput" placeholder="Ex: USD">
+        <button onclick="buscarMoeda()">Consultar</button>
+        <h2 id="resMoeda" class="animate__animated"></h2>
+    </div>
+
+    <div class="card">
+        <h3>Consulta de Clima</h3>
+        <input type="text" id="cidadeInput" placeholder="Ex: Salvador">
+        <button onclick="buscarClima()">Consultar</button>
+        <h2 id="resClima" class="animate__animated"></h2>
+    </div>
+
+    <script>
+        async function buscarMoeda() {
+            const m = document.getElementById('moedaInput').value.toUpperCase();
+            const res = await fetch(`http://localhost:3000/cotacao/${m}`);
+            const data = await res.json();
+            const valor = data[m + 'BRL'].bid;
+            
+            const el = document.getElementById('resMoeda');
+            el.innerText = `R$ ${valor}`;
+            el.className = 'animate__animated animate__bounceIn';
+        }
+
+        async function buscarClima() {
+            const c = document.getElementById('cidadeInput').value;
+            const res = await fetch(`http://localhost:3000/clima/${c}`);
+            const data = await res.json();
+            const temp = data.current_condition[0].temp_C;
+            
+            const el = document.getElementById('resClima');
+            el.innerText = `${temp}°C`;
+            el.className = 'animate__animated animate__rotateIn';
+        }
+    </script>
+</body>
+</html>
